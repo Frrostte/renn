@@ -51,7 +51,93 @@ After training, the model's performance is evaluated using the following metrics
 - **Confusion Matrix**: Displays the confusion matrix for further performance analysis.
 
 ### Evaluation Code Example
+Training the Model
+Optimizer: We use the Adam optimizer, which adapts the learning rate during training, to minimize the binary cross-entropy loss function.
 
+Class Weighting: To handle class imbalance, higher weights are assigned to the minority class (fraudulent transactions) during the training process.
+
+Epochs: The model is trained for 300 epochs, with loss calculated for each iteration.
+
+Training Loop Example:
+python
+Copy
+epochs = 300
+for epoch in range(epochs):
+    model.train()
+    outputs = model(X_train_tensor, rule_train_tensor)
+    loss = criterion(outputs, y_train_tensor)
+
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+    if (epoch + 1) % 10 == 0:
+        print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
+Model Evaluation
+After training, the model is evaluated on a separate test set. The evaluation includes:
+
+Accuracy: Measures the percentage of correct predictions.
+
+Classification Report: Provides precision, recall, and F1-score for each class (fraudulent and non-fraudulent transactions).
+
+Confusion Matrix: Displays the confusion matrix to better understand true positives, false positives, true negatives, and false negatives.
+
+Evaluation Code Example:
+python
+Copy
+accuracy = accuracy_score(y_test_np, predictions_np)
+print(f'Accuracy: {accuracy:.4f}')
+
+report = classification_report(y_test_np, predictions_np, target_names=['Class 0', 'Class 1'])
+print(report)
+Saving and Loading the Model
+The trained model can be saved and loaded using pickle. This ensures that the model can be reused without retraining.
+
+Saving the Model:
+python
+Copy
+model_state = model.state_dict()
+with open('trained_renn_model.pkl', 'wb') as f:
+    pickle.dump(model_state, f)
+Loading the Model:
+python
+Copy
+with open('trained_renn_model.pkl', 'rb') as f:
+    saved_model_state = pickle.load(f)
+
+model = Renn(input_size, rule_size, hidden_size, output_size)
+model.load_state_dict(saved_model_state)
+Requirements
+The following Python libraries are required to run the project:
+
+pandas
+
+scikit-learn
+
+imblearn
+
+torch
+
+numpy
+
+pickle
+
+You can install the dependencies using pip:
+
+bash
+Copy
+pip install pandas scikit-learn imbalanced-learn torch numpy
+Usage
+Clone this repository:
+
+bash
+Copy
+git clone https://github.com/your-username/fraud-detection.git
+Download the dataset (fraudTest.csv) and place it in the project directory.
+
+Run the Python script (fraud_detection.py) to train the model and evaluate its performance.
+
+The trained model will be saved as trained_renn_model.pkl, which you can load for future predictions.
 ```python
 accuracy = accuracy_score(y_test_np, predictions_np)
 print(f'Accuracy: {accuracy:.4f}')
